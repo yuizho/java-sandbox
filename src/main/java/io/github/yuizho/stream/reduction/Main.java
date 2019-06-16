@@ -2,6 +2,7 @@ package io.github.yuizho.stream.reduction;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String... args) {
@@ -82,6 +83,7 @@ public class Main {
                 products.parallelStream()
                         .collect(
                                 // var使うとココで型を明示的に示さないとだめ
+                                // ConcurrentHashMapとかにしてみてもうまくいかなかった
                                 () -> new HashMap<Integer, Product>(),
                                 (acc, elm) -> {
                                     var product = acc.getOrDefault(elm.getType(),
@@ -92,5 +94,25 @@ public class Main {
                                 (acc1, acc2) -> acc1.putAll(acc2)
                         );
         System.out.println(resultOfMutableReductionWithParallel);
+
+        // reduce以外でやるとしたら
+
+        // grouping + reductingでも出来なくもない
+        var resultsOfGroupingAndReducting =
+                products
+                        .stream()
+                        .collect(Collectors.groupingBy(
+                                product -> product.getType(),
+                                Collectors.reducing(
+                                        // 合算対象以外のものがあると、こんな感じでそれの初期値も指定してやらないといけない。
+                                        // reducing(3)もidentityの方で指定したものに、計算結果が入っていく感じなので今回のようなケースでうまく使えない。
+                                        new Product(0, 0),
+                                        (acc1, acc2) -> {
+                                            acc2.setValue(acc1.getValue() + acc2.getValue());
+                                            return acc2;
+                                        }
+                                )
+                        ));
+        System.out.println(resultsOfGroupingAndReducting);
     }
 }

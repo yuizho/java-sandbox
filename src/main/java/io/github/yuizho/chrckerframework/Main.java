@@ -1,5 +1,6 @@
 package io.github.yuizho.chrckerframework;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;
@@ -9,7 +10,7 @@ import java.util.Objects;
  */
 public class Main {
     public static void main(String... args) {
-        Integer result = getLength("aa");
+        @NonNull Integer result = getLength("aa");
         // ここで警告が出る
         System.out.println(result.intValue());
     }
@@ -17,7 +18,7 @@ public class Main {
     @Nullable
     public static Integer getLength(@Nullable String str) {
         // requreNonNullでも警告は消える
-        Objects.requireNonNull(str);
+        //Objects.requireNonNull(str);
         // 無駄にボクシングしているが, これはNullにするため
         // strのNullCheckをしてい無いと警告がでる。
         return str.length();

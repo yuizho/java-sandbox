@@ -24,7 +24,7 @@ public class Main {
         // 破壊的ではないので、元の時間はかわらない
         System.out.println(localDateTime);
         // 3日前
-        System.out.println(localDateTime.plusDays(-3));
+        System.out.println(localDateTime.minusDays(3));
 
         // 月の最終日
         System.out.println(localDateTime.with(TemporalAdjusters.lastDayOfMonth()));

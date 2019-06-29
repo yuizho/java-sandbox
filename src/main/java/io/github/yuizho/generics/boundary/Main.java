@@ -1,4 +1,4 @@
-package io.github.yuizho.generics;
+package io.github.yuizho.generics.boundary;
 
 import java.util.ArrayList;
 import java.util.Collection;

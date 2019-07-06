@@ -1,4 +1,4 @@
-package io.github.yuizho.thread.concurrent;
+package io.github.yuizho.thread.concurrent.countdownlatch;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;

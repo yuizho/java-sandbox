@@ -15,9 +15,11 @@ public class Main {
 
         for (int i = 0; i < concurrency; i++) {
             executor.execute(() -> {
+                // 初期値から-1していく (awaitするとこれが0になるまで待機する)
                 ready.countDown();
                 System.out.println("prepare task: " + Thread.currentThread().getId());
                 try {
+                    // start#countDownが実行されるまでここで待機
                     start.await();
                     System.out.println("do task: " + Thread.currentThread().getId());
                 } catch (InterruptedException e) {
@@ -32,12 +34,17 @@ public class Main {
         System.out.println("before starting tasks");
 
         System.out.println("before ready await");
+        // 0になるまで待機する
         ready.await();
 
         System.out.println("before start countDown");
+        // すべてのスレットが準備OK状態でここに来る
+        // startのcount値は1なので、このcountDownがトリガーになり、
+        // 全スレッドが処理を開始する。
         start.countDown();
 
         System.out.println("before done await");
+        // 各処理が完了するのをここで待ち受ける
         done.await();
 
         System.out.println("all of tasks are done");

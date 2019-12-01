@@ -16,7 +16,10 @@ fun main() {
             """.trimIndent())
     )
     val csv = StringWriter().use { writer ->
-        val entityToCsv = StatefulBeanToCsvBuilder<CsvEntity>(writer).build()
+        val entityToCsv = StatefulBeanToCsvBuilder<CsvEntity>(writer)
+                // ここをfalseにすると改行や"などが含まれているときのみクォートでかこむ感じになる
+                //.withApplyQuotesToAll(false)
+                .build()
         entityToCsv.write(entities)
         writer.toString()
     }

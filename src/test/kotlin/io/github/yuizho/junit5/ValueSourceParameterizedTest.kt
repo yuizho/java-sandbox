@@ -1,17 +1,15 @@
 package io.github.yuizho.junit5
 
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.EnumSource
-import org.junit.jupiter.params.provider.MethodSource
-import org.junit.jupiter.params.provider.ValueSource
-import java.util.stream.IntStream
+import org.junit.jupiter.params.provider.*
+import java.util.stream.Stream
 import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class ValueSourceStringsParameterizedTest {
-    @ParameterizedTest
+    @DisplayName("ValueSourceStringsParameterizedTest")
+    @ParameterizedTest(name = "[{index} first argument={0}]")
     @ValueSource(strings = ["Hello", "World"])
     fun testWith(argument: String) {
         println("Parameterized test with (String) parameter: $argument")
@@ -92,6 +90,35 @@ class MethodSourceTypesParameterizedTest {
     @MethodSource("argumentsProvider")
     fun testWith(name: String, number: Int) {
         println("Parameterized test with (Arguments) parameter: $number: $name")
+        assertNotNull(String)
+        assertNotNull(number)
+    }
+}
+
+class CsvSourceParameterizedTest {
+    @ParameterizedTest
+    @CsvSource(value = ["yamada, 1", "ishikawa, 19"])
+    fun testWith(name: String, number: Int) {
+        println("Parameterized test with (csv) parameter: $number: $name")
+        assertNotNull(String)
+        assertNotNull(number)
+    }
+}
+
+class ArgumentSourceParameterizedTest {
+    class CustomArgumentProvider : ArgumentsProvider {
+        override fun provideArguments(context: ExtensionContext?): Stream<out Arguments> {
+            return Stream.of(
+                    Arguments.of("山田", 1),
+                    Arguments.of("石川", 19)
+            )
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(CustomArgumentProvider::class)
+    fun testWith(name: String, number: Int) {
+        println("Parameterized test with (ArgumentSource) parameter: $number: $name")
         assertNotNull(String)
         assertNotNull(number)
     }

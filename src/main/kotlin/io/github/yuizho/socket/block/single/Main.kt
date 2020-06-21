@@ -9,18 +9,25 @@ fun main() {
         ssc.socket().bind(InetSocketAddress(port))
         println("start server on port $port")
         while (true) {
+            println("waiting a request...")
+            // ここでブロックするのでこのサーバは、一回に一つのクライアントしか相手に出来ない
+            // 複数のterminalでtelnetすると、2回目に接続したクライアントは１つ目のクライアントがexitするまでブロックされてしまう
             ssc.accept().use { sc ->
-                sc.socket().getInputStream().bufferedReader().also { reader ->
-                    reader.forEachLine { line ->
-                        println("received: $line")
-                        if ("exit" == line) {
-                            sc.socket().close()
-                            return@forEachLine
-                        }
-                        sc.socket().getOutputStream().bufferedWriter().also { writer ->
+                println("a client has connected to this server")
+                sc.socket().getInputStream().bufferedReader().use { reader ->
+                    sc.socket().getOutputStream().bufferedWriter().use { writer ->
+                        while (true) {
+                            val line = reader.readLine()
+                            println("received: $line")
+                            if ("exit" == line) {
+                                sc.socket().close()
+                                break
+                            }
+                            // echo
                             writer.write("$line\n")
                             writer.flush()
                         }
+                        println("the client has disconnected")
                     }
                 }
             }

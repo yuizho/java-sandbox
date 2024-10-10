@@ -36,11 +36,11 @@ public class Main {
 
         // Java21から入ったRecord Patterns
         System.out.println("--------- Pattern Matching ---------");
-        patternMatching(new Healthy());
-        patternMatching(new Unhealthy("error"));
-        patternMatching(new Unhealthy(null));
-        patternMatching(new Stopped(LocalDateTime.now()));
-        patternMatching(null);
+        System.out.println(patternMatchingJava21(new Healthy()));
+        System.out.println(patternMatchingJava21(new Unhealthy("busy")));
+        System.out.println(patternMatchingJava21(new Unhealthy(null)));
+        System.out.println(patternMatchingJava21(new Stopped(LocalDateTime.now())));
+        System.out.println(patternMatchingJava21(null));
     }
 
     public record Point(int x, int y) {
@@ -87,14 +87,14 @@ public class Main {
     record Stopped(LocalDateTime stoppedDateTime) implements State {
     }
 
-    static  void patternMatching(State state) {
-        switch (state) {
-            case null -> System.out.println("null");
-            case Healthy() -> System.out.println("Healthy");
-            case Unhealthy(String r) when r == null -> System.out.println("Unhealthy: null");
-            case Unhealthy(String r) -> System.out.println("Unhealthy: " + r);
-            case Stopped(LocalDateTime d) -> System.out.println("Stopped: " + d);
-            //case Point(int x, int y) -> System.out.println("Point: " + x + ", " + y); // compile error
-        }
+    static String patternMatchingJava21(State state) {
+        return switch (state) {
+            case null -> "null";
+            case Healthy() -> "Healthy";
+            case Unhealthy(String r) when r == null -> "Unhealthy: null";
+            case Unhealthy(String r) -> "Unhealthy: " + r;
+            case Stopped(LocalDateTime d) -> "Stopped: " + d;
+            //case Point(int x, int y) -> "Point: " + x + ", " + y // compile error
+        };
     }
 }

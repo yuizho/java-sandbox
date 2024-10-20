@@ -1,10 +1,10 @@
-package io.github.yuizho.thread.concurrent.countdownlatch;
+package io.github.yuizho.thread.concurrent.synchronizer;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Main {
+public class CountDownLatchSample {
     public static void main(String... args) throws InterruptedException {
         final int concurrency = 5;
         final ExecutorService executor

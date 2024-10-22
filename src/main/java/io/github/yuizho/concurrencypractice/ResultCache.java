@@ -35,26 +35,33 @@ class Memolizer {
     private final Map<Integer, Future<Integer>> cache = new ConcurrentHashMap<>();
 
     // ここをsynchronizedするとおそすぎる
-    public synchronized Integer compute(Integer arg) throws InterruptedException {
-        System.out.println("key: " + arg +  ", compute on " + Thread.currentThread().threadId());
-        Future<Integer> chachedFutureTask = cache.get(arg);
-        if (chachedFutureTask == null) {
-            System.out.println("cache miss on " + Thread.currentThread().threadId());
-            FutureTask<Integer> futureTask = new FutureTask<>(() -> {
-                // heavy calculation
-                Thread.sleep(1000);
-                return arg % 2;
-            });
-            cache.putIfAbsent(arg, futureTask);
-            chachedFutureTask = futureTask;
-            futureTask.run();
-        } else {
-            System.out.println("cache hit on " + Thread.currentThread().threadId());
-        }
-        try {
-            return chachedFutureTask.get();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+    public Integer compute(Integer arg) throws InterruptedException {
+        while (true) {
+            System.out.println("key: " + arg + ", compute on " + Thread.currentThread().threadId());
+            Future<Integer> chachedFutureTask = cache.get(arg);
+            if (chachedFutureTask == null) {
+                System.out.println("cache miss on " + Thread.currentThread().threadId());
+                FutureTask<Integer> futureTask = new FutureTask<>(() -> {
+                    // heavy calculation
+                    Thread.sleep(1000);
+                    return arg % 2;
+                });
+                // https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/ConcurrentHashMap.html#putIfAbsent-K-V-
+                chachedFutureTask = cache.putIfAbsent(arg, futureTask);
+                if (chachedFutureTask == null) {
+                    chachedFutureTask = futureTask;
+                    futureTask.run();
+                }
+            } else {
+                System.out.println("cache hit on " + Thread.currentThread().threadId());
+            }
+            try {
+                return chachedFutureTask.get();
+            } catch (CancellationException e) {
+                cache.remove(arg, chachedFutureTask);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

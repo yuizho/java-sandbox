@@ -5,6 +5,8 @@ import java.util.concurrent.locks.*;
 
 public class PinningDemo {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
+        // ./mvnw clean compile exec:java -Dexec.mainClass=io.github.yuizho.virtualthreads.PinningDemo -Djdk.virtualThreadScheduler.maxPoolSize=1 -Djdk.tracePinnedThreads=full
+
         ExecutorService service =
                 Executors.newVirtualThreadPerTaskExecutor();
         // Executors.newCachedThreadPool();

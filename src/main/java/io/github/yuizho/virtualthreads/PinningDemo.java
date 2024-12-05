@@ -5,7 +5,15 @@ import java.util.concurrent.locks.*;
 
 public class PinningDemo {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-        // ./mvnw clean compile exec:java -Dexec.mainClass=io.github.yuizho.virtualthreads.PinningDemo -Djdk.virtualThreadScheduler.maxPoolSize=1 -Djdk.tracePinnedThreads=full
+        // https://dev.java/learn/new-features/virtual-threads/#pinning
+
+        // ./mvnw clean compile && java \
+        // -XX:StartFlightRecording=dumponexit=true,filename=./virtualthraed_8thread_pinned.jfr \
+        //    -Djdk.virtualThreadScheduler.parallelism=1                \
+        //    -Djdk.virtualThreadScheduler.maxPoolSize=1                \
+        //    -Djdk.tracePinnedThreads=full                             \
+        //    -cp target/classes                                        \
+        //    io.github.yuizho.virtualthreads.PinningDemo
 
         ExecutorService service =
                 Executors.newVirtualThreadPerTaskExecutor();

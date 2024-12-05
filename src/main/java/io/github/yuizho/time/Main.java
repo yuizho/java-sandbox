@@ -1,45 +1,45 @@
 package io.github.yuizho.time;
 
-import java.time.LocalDateTime;
-import java.time.YearMonth;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.temporal.TemporalAdjusters;
-
-import java.time.temporal.ChronoUnit;
 
 public class Main {
     public static void main(String... args) {
-        // ローカル時間
-        LocalDateTime localDateTime = LocalDateTime.now();
-        System.out.println(localDateTime);
+        // The LocalDate Class
+        System.out.println("--------- The LocalDate Class");
+        LocalDate date = LocalDate.of(2000, Month.NOVEMBER, 20);
+        // 次の水曜日を取得
+        LocalDate nextWed = date.with(TemporalAdjusters.next(DayOfWeek.WEDNESDAY));
+        System.out.println(nextWed);
 
-        // タイムゾーン付き
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Europe/Rome"));
+        // The MonthDay Class
+        System.out.println("--------- The MonthDay Class");
+        MonthDay monthDay = MonthDay.of(Month.FEBRUARY, 29);
+        // うるう年化どうかのチェツク
+        boolean validLeapYear = monthDay.isValidYear(2010);
+        System.out.println(validLeapYear);
+
+        // The Year Class
+        System.out.println("--------- The Year Class");
+        // 年だけでうるう年かどうかチェック
+        boolean validLeapYearByYear = Year.of(2012).isLeap();
+        System.out.println(validLeapYearByYear);
+
+        // The ZoneId and ZoneOffset Classes
+        System.out.println("--------- The ZoneId and ZoneOffset Classes");
+        ZoneId tokyo = ZoneId.of("Asia/Tokyo");
+        System.out.println(tokyo);
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(tokyo);
         System.out.println(zonedDateTime);
+        ZoneOffset offset = zonedDateTime.getOffset();
+        System.out.println(offset);
 
-        // 計算系
-        // 3日後
-        System.out.println(localDateTime.plusDays(3));
-        // 破壊的ではないので、元の時間はかわらない
-        System.out.println(localDateTime);
-        // 3日前
-        System.out.println(localDateTime.minusDays(3));
-
-        // 月の最終日
-        System.out.println(localDateTime.with(TemporalAdjusters.lastDayOfMonth()));
-
-        // 比較
-        System.out.println(localDateTime.isAfter(localDateTime.plusSeconds(-1)));
-        System.out.println(localDateTime.isEqual(localDateTime));
-
-        // 時間の一部を表す、time.temporal.Temporalの実装たち
-        System.out.println(YearMonth.from(localDateTime));
-        // サポートしている単位の確認
-        System.out.println(localDateTime.isSupported(ChronoUnit.SECONDS));
-        // YearMonthは秒はサポートしてないのでfalseになる
-        System.out.println(YearMonth.from(localDateTime)
-                .isSupported(ChronoUnit.SECONDS)
-        );
+        // The OffsetDateTime Class
+        System.out.println("--------- The OffsetDateTime Class");
+        LocalDateTime ld = LocalDateTime.of(2013, Month.JULY, 20, 19, 30);
+        ZoneOffset zo = ZoneOffset.of("-08:00");
+        // LocalDateにOffsetをつけてOffsetDatetime作れる
+        OffsetDateTime offsetDate = OffsetDateTime.of(ld, zo);
+        System.out.println(offsetDate);
     }
 }

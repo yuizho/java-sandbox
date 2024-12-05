@@ -1,0 +1,12 @@
+#!/Users/yui-ito/.sdkman/candidates/java/current/bin/java --source 21
+// TODO: javaのパスは環境に合わせて
+
+package io.github.yuizho.singlefileprogram.shebang;
+
+public class HelloJava {
+    // https://dev.java/learn/single-file-program/#shebang
+    // you can execute this code `./HelloJava`
+    public static void main(String[] args) {
+        System.out.println("Hello!! I'm working by shebang!!");
+    }
+}
